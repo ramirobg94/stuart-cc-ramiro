@@ -1,37 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-export default class Map extends Component {
+import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 
-  componentDidMount() {
-    this.loadMap();
-  }
+import PickUpBlank from '../../statics/pickUpBadgeBlank.svg'
 
-  loadMap() {
-    if (this.props && this.props.google) {
-      const {google} = this.props;
-      const maps = google.maps;
-
-      const mapRef = this.refs.map;
-      const node = ReactDOM.findDOMNode(mapRef);
-
-      const mapConfig = Object.assign({}, {
-        center: {lat: 48.863399, lng: 2.313305},
-        zoom: 15,
-        mapTypeId: 'roadmap',
-        disableDoubleClickZoom: true,
-        mapTypeControl: false,
-        scaleControl: false,
-        streetViewControl: false,
-        zoomControl: false,
-        fullscreenControl: false
-    })
-
-      this.map = new maps.Map(node, mapConfig);
-
-    }
-  }
-
+export default class MapComponent extends Component {
   render() {
     const style = {
       width: '100vw',
@@ -40,8 +14,26 @@ export default class Map extends Component {
 
     return (
       <div ref="map" id="Map" style={style}>
-        loading maap...
+         <Map google={this.props.google} 
+          initialCenter={{lat: 48.863399, lng: 2.313305}}
+            zoom={15}
+            mapTypeId='roadmap'
+            disableDoubleClickZoom={ true}
+            mapTypeControl={false}
+            scaleControl={false}
+            streetViewControl={false}
+            zoomControl={false}
+            fullscreenControl={false}>
+ 
+  
+  <Marker
+    name={'Your position'}
+    position={{lat: 48.863399, lng: 2.313305}}
+    icon={PickUpBlank} />
+       </Map>
       </div>
+
+      
     )
   }
 }
