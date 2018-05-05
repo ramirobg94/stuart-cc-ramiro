@@ -4,7 +4,9 @@ import './App.css';
 
 import { GoogleApiWrapper } from 'google-maps-react' 
 
-import MapContainer from './MapContainer'
+import MapContainer from './components/Map/Map.container'
+import FormContainer from './components/Form/Form.container'
+import ToasterContainer from './components/Toaster/Toaster.container';
 
 class App extends Component {
   render() {
@@ -13,7 +15,8 @@ class App extends Component {
       <div className="App">
     
         <MapContainer google={this.props.google} />
-       
+        <FormContainer/>
+        <ToasterContainer/>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-export default class MapContainer extends Component {
+export default class Map extends Component {
 
   componentDidMount() {
     this.loadMap();
@@ -25,10 +25,8 @@ export default class MapContainer extends Component {
         streetViewControl: false,
         zoomControl: false,
         fullscreenControl: false
-
     })
 
-      console.log("aA")
       this.map = new maps.Map(node, mapConfig);
 
     }
@@ -41,7 +39,7 @@ export default class MapContainer extends Component {
     }
 
     return (
-      <div ref="map" style={style}>
+      <div ref="map" id="Map" style={style}>
         loading maap...
       </div>
     )
