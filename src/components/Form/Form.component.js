@@ -9,61 +9,93 @@ import DropOffBlank from '../../statics/dropOffBadgeBlank.svg'
 import DropOffError from '../../statics/dropOffBadgeError.svg'
 import DropOffPresent from '../../statics/dropOffBadgePresent.svg'
 
+const WAIT_INTERVAL = 1000;
+
+const icons = {
+  pickUp:{
+    blank: PickUpBlank,
+    error: PickUpError,
+    present: PickUpPresent,
+  },
+  dropOff:{
+    blank: DropOffBlank,
+    error: DropOffError,
+    present: DropOffPresent,
+  }
+}
+
 export default class Form extends Component {
 
   constructor(props){
     super(props)
-    this.state = {
-      pickUp: '',
-      dropOff: ''
-    }
+    this.timeout =  0;
+
     this.handleChange = this.handleChange.bind(this)
   }
 
   handleChange = (field, value) => {
-    this.setState({[field]: value})
-    this.props.handleChange(field)
+    this.props.handleChange(field, value)
+    if(this.timeout) clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.props.onBlur(field, value)
+    }, WAIT_INTERVAL);
   }
 
+  componentDidMount(){
+    if(this.timeout) clearTimeout(this.timeout);
+  }
+  componentWillUnmount(){
+    if(this.timeout) clearTimeout(this.timeout);
+  }
+
+
   render() {
-
     const { pickUp, dropOff, onBlur } = this.props
-
     return (
       <div className="Form">
-        <div className="flex-column">
-            <img className="badge" src={
-              pickUp.address === '' && pickUp.error === false ? PickUpBlank :
-                (pickUp.error ? PickUpError : PickUpPresent)
-              }/>
-              <img className="badge" src={
-              dropOff.address === '' && dropOff.error === false ? DropOffBlank :
-                (dropOff.error ? DropOffError : DropOffPresent)
-              }/>
+        <div className="flex-column">              
+              <Badge id='pickUp' address={pickUp} />
+              <Badge id='dropOff' address={dropOff} />
         </div>
         <div className="flex-column left-column">
-            <input
-              className="input"
-              placeholder="Pick up address"
+          <Input
               id='pickUp'
-              value={pickUp.error ? 'An invalid pick up address' : this.state.pickUp}
-              onChange={e=> this.handleChange(e.target.id,e.target.value)}
-              onBlur={e=>onBlur(e.target.id, e.target.value)}
-              type="text"/>
-
-            <input
-              className="input"
-              placeholder="Drop off address"
+              address={pickUp}
+              placeholder="Pick up address"
+              onChange={this.handleChange}
+              onBlur={onBlur}
+          />
+          <Input
               id='dropOff'
-              value={dropOff.error ? 'An invalid drop off address' : this.state.dropOff}
-              onChange={e=> this.handleChange(e.target.id,e.target.value)}
-              onBlur={e=>onBlur(e.target.id, e.target.value)}
-              type="text"/>
+              address={dropOff}
+              placeholder="Drop up address"
+              onChange={this.handleChange}
+              onBlur={onBlur}
+          />
+            
 
-            <button className="button">Create job</button>
+            <button onClick={()=>this.props.postJob()} className={`button ${this.props.loading || pickUp.error ||  dropOff.error ? 'loading' : ''}`}>{this.props.loading  ? 'Creating...' : 'Create job'}</button>
         </div>
       </div>
     )
   }
 }
+
+const Badge = ({id, address}) =>
+  <img
+    className="badge" 
+    src={ 
+      address.error ? icons[id].error : (address.valid ? icons[id].present : icons[id].blank) 
+    }
+  />
+
+const Input = ({placeholder, id, address, onChange, onBlur}) => 
+  <input
+    className="input"
+    placeholder={placeholder}
+    id={id}
+    value={address.error ? `An invalid ${placeholder.toLowerCase() }` : address.address}
+    onChange={e=> onChange(e.target.id,e.target.value)}
+    onBlur={e=>onBlur(e.target.id, e.target.value)}
+    type="text"/>
 

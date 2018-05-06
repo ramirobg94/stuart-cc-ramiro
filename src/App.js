@@ -21,19 +21,22 @@ class App extends Component {
         address: '',
         latitude: 0,
         longitude: 0,
-        error: false
+        error: false,
+        valid: false
       },
       dropOff:{
         address: '',
         latitude: 0,
         longitude: 0,
-        error: false
+        error: false,
+        valid: false
       },
-      errors: []
+      toaster: false
     }
 
     this.checkAddress = this.checkAddress.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.postJob = this.postJob.bind(this)
   }
 
   checkAddress = async (field, value) => {
@@ -54,18 +57,19 @@ class App extends Component {
           this.setState((prevState) => {
             return {[field]: {
               ...prevState[field],
-              error: true
+              error: true,
+              valid: false
             } }
           });
 
          }else{
-          console.log(responseData)
           this.setState((prevState) => {
            
             return {[field]: {
               ...prevState[field],
               ...responseData,
               error: false,
+              valid: true
             } }
           });
           
@@ -76,18 +80,55 @@ class App extends Component {
        
    }
 
-   handleChange = (field) => {
+   postJob = async () => {
+    const params = { pickup: this.state.pickUp.address , dropoff:  this.state.dropOff.address};
+    this.setState({loading: true})
+    fetch("http://localhost:4000/jobs",{
+        method: "POST",
+        headers: {
+          'Content-Type':'application/json'
+        },
+         body: JSON.stringify(params)
+      })
+      .then((response) => response.json() )
+      .then((responseData) => {
+        
+       
+        if(responseData.code !== undefined){
+          setTimeout(() =>  this.setState({loading: false}), 500);
+          console.log("eeeerrror", responseData)
+        }else{
+          console.log("success", responseData)
+          const initAddress = {address: '', latitude: 0, longitude: 0, error: false, valid: false}
+          setTimeout(() =>   this.setState({
+            pickUp: initAddress,
+            dropOff: initAddress,
+            toaster: true,
+            loading: false
+          }), 500);
+
+        }
+       
+      })
+      .catch(e => {
+        console.log("EEEE",e)
+        setTimeout(() =>  this.setState({loading: false}), 500);
+      })
+
+   }
+
+   handleChange = (field, value) => {
      this.setState( prevState => {
       return {[field]: {
         ...prevState[field],
-        address: '',
+        address: value,
+        valid: false,
         error: false,
       }}
      })
    }
 
   render() {
-    console.log(this.props)
     console.log(this.state)
     return (
       <div className="App">
@@ -99,8 +140,10 @@ class App extends Component {
           onBlur={this.checkAddress}
           pickUp={this.state.pickUp}
           dropOff={this.state.dropOff}
+          postJob={this.postJob}
+          loading={this.state.loading}
         />
-        <ToasterContainer/>
+        {this.state.toaster && <ToasterContainer closeToaster={()=> this.setState({toaster: false})}/> }
       </div>
     );
   }
