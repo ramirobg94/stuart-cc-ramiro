@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 
-import PickUpBlank from '../../statics/pickUpBadgeBlank.svg'
+import PickUpMarker from '../../statics/pickUpMarker.svg'
+import DropOffMarker from '../../statics/dropOffMarker.svg'
 
 export default class MapComponent extends Component {
   render() {
@@ -11,6 +12,8 @@ export default class MapComponent extends Component {
       width: '100vw',
       height: '100vh'
     }
+
+    const { pickUp, dropOff } = this.props
 
     return (
       <div ref="map" id="Map" style={style}>
@@ -26,10 +29,14 @@ export default class MapComponent extends Component {
             fullscreenControl={false}>
  
   
-  <Marker
+  { pickUp.error === false && pickUp.address !== '' && <Marker
     name={'Your position'}
-    position={{lat: 48.863399, lng: 2.313305}}
-    icon={PickUpBlank} />
+    position={{lat: pickUp.latitude, lng: pickUp.longitude}}
+    icon={PickUpMarker} />}
+    { dropOff.error === false && dropOff.address !== '' && <Marker
+    name={'Your position'}
+    position={{lat: dropOff.latitude, lng: dropOff.longitude}}
+    icon={DropOffMarker} /> }
        </Map>
       </div>
 

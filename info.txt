@@ -4,7 +4,9 @@ Sat
     setup-project
         create-react-app
         find,install, configure map without visual elements
-            google.maps.MapOptions object specification > https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+            google.maps.MapOptions object specification > 
+                https://www.npmjs.com/package/google-maps-react
+                https://developers.google.com/maps/documentation/javascript/reference#MapOptions
         reproduce UI items
             https://www.w3schools.com/howto/howto_css_placeholder.asp
 19:30 upload this UI elements
