@@ -10,13 +10,13 @@ export const geocode = value =>
     })
     .then(response => response.json())
     
-export const postJob = (pickup, dropoff) => 
+export const postJob = (address) => 
     fetch(`${API_URL}/jobs`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify({pickup, dropoff})
+        body: JSON.stringify(address)
     })
     .then(response => response.json())
     

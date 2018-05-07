@@ -1,4 +1,4 @@
-import { call, put, select, takeEvery, all } from "redux-saga/effects";
+import { call, put, select, takeEvery, all} from "redux-saga/effects";
 import * as stuartApi from "../../api/stuart.api";
 
 import * as actionTypes from "./actionTypes";
@@ -27,18 +27,17 @@ export function* geoCodeSaga(action) {
   }
 }
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
+export const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function* postJobSaga(action) {
   yield put(uiActions.setLoading());
   try {
     const pickUp = yield select(selectors.getPickUp);
     const dropOff = yield select(selectors.getDropOff);
+
     const responseData = yield call(
-      stuartApi.postJob,
-      pickUp.address,
-      dropOff.address
-    );
+      stuartApi.postJob, {pickup: pickUp.address, dropoff: dropOff.address})
+      
     yield call(delay, 500);
     if (responseData.code !== undefined) {
       throw responseData.code;

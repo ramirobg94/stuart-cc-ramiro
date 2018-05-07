@@ -16,7 +16,4 @@ export const geoCodeAddressError = createAction(
   field => ({ field })
 );
 
-export const clean = createAction(
-    actionTypes.CLEAN,
-    () => ({  })
-  );
+export const clean = createAction(actionTypes.CLEAN, () => ({}));
