@@ -1,0 +1,6 @@
+export const HANDLE_CHANGE = "HANDLE_CHANGE";
+
+export const GEOCODE_ADDRESS = "GEOCODE_ADDRESS";
+export const GEOCODE_ADDRESS_ERROR = "GEOCODE_ADDRESS_ERROR";
+
+export const CLEAN = 'CLEAN';
